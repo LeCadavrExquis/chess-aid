@@ -1,3 +1,4 @@
+import ui.searchPlayerBar
 import react.dom.render
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -15,7 +16,7 @@ fun main() {
             h1 {
                 +"Chess Aid"
             }
-            child(SearchPlayerBar::class) {  }
+            searchPlayerBar()
             br {  }
             child(ChessBoard::class) {
                 attrs {

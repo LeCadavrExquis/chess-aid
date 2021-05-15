@@ -1,5 +1,8 @@
+package ui
+
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
+import kotlinx.html.js.onClickFunction
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
@@ -8,13 +11,9 @@ import react.RState
 import react.dom.button
 import react.dom.div
 import react.dom.input
-import styled.css
-import styled.styledDiv
-import styled.styledInput
 
 data class SearchPlayerBarState(val name: String) : RState
 
-@JsExport
 class SearchPlayerBar : RComponent<RProps, SearchPlayerBarState>() {
 
     init {
@@ -37,6 +36,11 @@ class SearchPlayerBar : RComponent<RProps, SearchPlayerBarState>() {
         }
         button {
             +"Search"
+            // DEBUG
+            attrs.onClickFunction = { console.log("searchBar state = ${state.name}") }
+            //
         }
     }
 }
+
+fun RBuilder.searchPlayerBar() = child(SearchPlayerBar::class) { }
