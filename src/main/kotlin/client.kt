@@ -1,8 +1,10 @@
+import ui.searchPlayerBar
 import react.dom.render
 import kotlinx.browser.document
 import kotlinx.browser.window
 import react.dom.br
 import react.dom.h1
+import ui.movesTable
 
 fun main() {
     window.onload = {
@@ -15,8 +17,12 @@ fun main() {
             h1 {
                 +"Chess Aid"
             }
-            child(SearchPlayerBar::class) {  }
+            searchPlayerBar()
             br {  }
+            movesTable {
+                currentPosition = ""
+                games = emptyList()
+            }
             child(ChessBoard::class) {
                 attrs {
                     game = "a4a5 gówno"
