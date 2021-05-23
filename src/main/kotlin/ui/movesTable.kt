@@ -15,7 +15,7 @@ class MovesTable : RComponent<MovesTableProps, RState>() {
 
     override fun RBuilder.render() {
         p { +"Current move :${props.currentPosition}" }
-        Table {
+            Table {
             attrs {
                 args = "striped bordered hover"
             }

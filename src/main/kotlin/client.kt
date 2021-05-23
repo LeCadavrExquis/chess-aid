@@ -14,20 +14,7 @@ fun main() {
 //                    name = "Kotlin/JS"
 //                }
 //            }
-            h1 {
-                +"Chess Aid"
-            }
-            searchPlayerBar()
-            br {  }
-            movesTable {
-                currentPosition = ""
-                games = emptyList()
-            }
-            child(ChessBoard::class) {
-                attrs {
-                    game = "a4a5 gówno"
-                }
-            }
+            app()
         }
     }
 }
