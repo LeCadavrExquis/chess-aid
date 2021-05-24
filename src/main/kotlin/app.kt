@@ -67,7 +67,6 @@ suspend fun fetchGames(username: String) : List<Game> {
     }
     val games: String = response.text().await()
 
-
     return games.split("}\n")
         .map { "$it}" }
         .dropLast(1)
