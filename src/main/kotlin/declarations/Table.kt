@@ -1,4 +1,4 @@
-package reactstrap
+package declarations
 
 import react.RClass
 import react.RProps

@@ -8,43 +8,42 @@ import kotlinx.html.js.onClickFunction
 import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.button
+import react.dom.defaultValue
 import react.dom.div
 import react.dom.input
 
-interface SearchPlayerBarProps : RProps {
+external interface SearchPlayerBarProps : RProps {
     var eh: EventsHandler
 }
 
-data class SearchPlayerBarState(val name: String) : RState
+external interface SearchPlayerBarState : RState {
+    var username: String
+}
 
-class SearchPlayerBar(props: SearchPlayerBarProps) : RComponent<SearchPlayerBarProps, SearchPlayerBarState>() {
-
+class SearchPlayerBar : RComponent<SearchPlayerBarProps, SearchPlayerBarState>() {
     init {
-        state = SearchPlayerBarState("type user name")
+        state.username = "type username"
     }
-
     override fun RBuilder.render() {
         div{
             input {
                 attrs {
                     type = InputType.text
-                    value = state.name
+                    value = state.username
                     onChangeFunction = { event ->
-                        setState(
-                            SearchPlayerBarState(name = (event.target as HTMLInputElement).value)
-                        )
+                        val target = event.target as HTMLInputElement
+                        setState {
+                            username = target.value
+                        }
                     }
                 }
             }
-        }
-        button {
-            +"Search"
-            // DEBUG
-            attrs.onClickFunction = {
-                console.log("searchBar state = ${state.name}")
-                props.eh.getGames("LeCadavrExquis")
+            button {
+                +"Search"
+                attrs.onClickFunction = {
+                    props.eh.getGames(state.username)
+                }
             }
-            //
         }
     }
 }

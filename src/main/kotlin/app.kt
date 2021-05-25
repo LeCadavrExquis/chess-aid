@@ -10,6 +10,8 @@ import react.RProps
 import react.RState
 import react.dom.br
 import react.dom.h1
+import ui.ChessBoard
+import ui.chessBoard
 import ui.movesTable
 import ui.searchPlayerBar
 import kotlin.js.Json
@@ -21,11 +23,13 @@ interface EventsHandler {
 
 external interface AppState : RState {
     var games: List<Game>
+    var currentPosition: String
 }
 
 class App : RComponent<RProps, AppState>(), EventsHandler {
     init {
         state.games = emptyList()
+        state.currentPosition = ""
     }
     override fun RBuilder.render() {
         h1 {
@@ -34,15 +38,13 @@ class App : RComponent<RProps, AppState>(), EventsHandler {
         searchPlayerBar {
             eh = this@App
         }
-        br {  }
         movesTable {
-            currentPosition = ""
+            currentPosition = state.currentPosition
             games = state.games
         }
-        child(ChessBoard::class) {
-            attrs {
-                game = "a4a5 gówno"
-            }
+        chessBoard {
+            currentPosition = state.currentPosition
+            eh = this@App
         }
     }
 

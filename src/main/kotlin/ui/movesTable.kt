@@ -1,18 +1,17 @@
 package ui
 
+import declarations.Table
 import model.Game
 import react.*
 import react.dom.*
-import reactstrap.Table
-import styled.css
-import styled.styledTable
+
 
 external interface MovesTableProps : RProps {
     var currentPosition: String
     var games: List<Game>
 }
 
-class MovesTable(props: MovesTableProps) : RComponent<MovesTableProps, RState>() {
+class MovesTable : RComponent<MovesTableProps, RState>() {
 
     override fun RBuilder.render() {
         p { +"Current move :${props.currentPosition}" }
@@ -32,7 +31,7 @@ class MovesTable(props: MovesTableProps) : RComponent<MovesTableProps, RState>()
                 props.games.take(5)
                     .forEach {
                         tr {
-                            td { +it.moves }
+                            td { +it.moves.slice(0..2) }
                             td { +it.color }
                             td { +it.type }
                         }
