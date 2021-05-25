@@ -1,16 +1,13 @@
 package ui
 
 import EventsHandler
-import kotlinx.browser.document
+import declarations.Chessboard
 import kotlinx.css.px
 import kotlinx.css.width
 import kotlinx.html.id
-import kotlinx.html.style
 import react.*
 import react.dom.img
 import styled.styledDiv
-import styled.styledImg
-import kotlin.js.Json
 import kotlin.js.json
 
 external interface ChessBoardProps : RProps {
@@ -18,7 +15,10 @@ external interface ChessBoardProps : RProps {
     var eh: EventsHandler
 }
 
-class ChessBoardState : RState
+external interface ChessBoardState : RState {
+    var board: Chessboard
+//    var divLoaded: Boolean
+}
 
 
 class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
@@ -26,12 +26,16 @@ class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
         styledDiv {
             attrs.id = "chessBoard"
             css.width = 400.px
-
-            styledImg {
-                attrs.src = "chess.png"
-                css.width = 400.px
-            }
         }
+//        if (!state.divLoaded) img { attrs.src = "chess.png" }
+    }
+
+    override fun componentDidMount() {
+        state.board = Chessboard("chessBoard", json(
+            "draggable" to true,
+            "position" to "start"
+        ))
+//        state.divLoaded = true
     }
 }
 

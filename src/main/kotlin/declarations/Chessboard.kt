@@ -1,10 +1,9 @@
 package declarations
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
+
 import kotlin.js.Json
-//
-//@JsModule("cm-chessboard")
-//@JsNonModule
-//
-//@JsName("Chessboard")
-//external fun Chessboard(divID: Element?, position: Json): Json
+import kotlin.js.json
+
+@JsModule("chessboardjs")
+@JsNonModule
+@JsName("Chessboard")
+external class Chessboard(divID: String, config: Json)
