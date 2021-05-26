@@ -38,6 +38,7 @@ class SearchPlayerBar : RComponent<SearchPlayerBarProps, SearchPlayerBarState>()
                 }
             }
             button {
+                //TODO: react-bootsrap loading button
                 +"Search"
                 attrs.onClickFunction = {
                     props.searchPlayer(state.username)

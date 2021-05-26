@@ -30,6 +30,7 @@ class App : RComponent<RProps, AppState>() {
         moves = emptyList()
     }
     override fun RBuilder.render() {
+        //TODO: manage proper display
         h1 {
             +"Chess Aid"
         }
