@@ -1,63 +1,77 @@
+import declarations.ChessGame
 import kotlinx.browser.window
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.await
 import kotlinx.coroutines.launch
-import model.Game
+import kotlinx.css.Display
+import kotlinx.css.display
+import model.GameModel
 import org.w3c.fetch.*
-import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
-import react.dom.br
+import react.*
 import react.dom.h1
-import ui.ChessBoard
+import react.dom.p
+import styled.styledDiv
+import ui.ChessboardEventHandler
 import ui.chessBoard
 import ui.movesTable
 import ui.searchPlayerBar
 import kotlin.js.Json
 import kotlin.js.json
 
-interface EventsHandler {
-    fun getGames(username: String)
-}
-
 external interface AppState : RState {
-    var games: List<Game>
-    var currentPosition: String
+    var games: List<GameModel>
+    var moves: List<String>
 }
 
-class App : RComponent<RProps, AppState>(), EventsHandler {
-    init {
-        state.games = emptyList()
-        state.currentPosition = ""
+class App : RComponent<RProps, AppState>() {
+    override fun AppState.init() {
+        games = emptyList()
+        moves = emptyList()
     }
     override fun RBuilder.render() {
         h1 {
             +"Chess Aid"
         }
         searchPlayerBar {
-            eh = this@App
+            searchPlayer = { username ->
+                MainScope().launch {
+                    val fetchedGames = fetchGames(username)
+                    println("fetched!")
+                    setState {
+                        games = fetchedGames
+                    }
+                }
+            }
         }
-        movesTable {
-            currentPosition = state.currentPosition
-            games = state.games
-        }
-        chessBoard {
-            currentPosition = state.currentPosition
-            eh = this@App
-        }
-    }
+        styledDiv {
+            css.display = Display.flex
+            chessBoard {
+                moves = state.moves
+                eh = object: ChessboardEventHandler {
+                    override fun movePlayed(move: String) {
+                        setState {
+                            moves = moves + move
+                            println(move)
+                        }
+                    }
 
-    override fun getGames(username: String) {
-        MainScope().launch {
-            val fetchedGames = fetchGames(username)
-            setState(state) {
-                state.games = fetchedGames
+                    override fun restartPosition() {
+                        setState {
+                            moves = emptyList()
+                            println(moves)
+                        }
+                    }
+                }
+            }
+            movesTable {
+                currentPosition = state.moves
+                games = state.games
             }
         }
     }
 }
-suspend fun fetchGames(username: String) : List<Game> {
+suspend fun fetchGames(username: String) : List<GameModel> {
     val request = object : RequestInit {
         override var method: String? = "GET"
         override var headers = json("Accept" to "application/x-ndjson")
@@ -74,7 +88,7 @@ suspend fun fetchGames(username: String) : List<Game> {
         .dropLast(1)
         .map { JSON.parse<Json>(it) }
         .map {
-            Game(
+            GameModel(
                 id = it["id"] as String,
                 type = it["speed"] as String,
                 moves = it["moves"] as String,

@@ -9,11 +9,6 @@ import ui.movesTable
 fun main() {
     window.onload = {
         render(document.getElementById("root")) {
-//            child(Welcome::class) {
-//                attrs {
-//                    name = "Kotlin/JS"
-//                }
-//            }
             app()
         }
     }

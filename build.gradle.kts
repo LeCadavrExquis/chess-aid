@@ -18,9 +18,10 @@ dependencies {
     implementation("org.jetbrains:kotlin-styled:1.0.0-pre.113-kotlin-1.4.0")
     implementation("org.jetbrains:kotlin-react-router-dom:5.1.2-pre.113-kotlin-1.4.0")
 
-    //implementation(npm("@chrisoakman/chessboardjs","1.0.0")) brakuje exportu, błąd biblioteki, biblioteka umieszczona w pliku HTML
-    implementation(npm("cm-chessboard", "3.12.6"))
+    implementation(npm("jquery", "3.6.0"))
     implementation(npm("react-bootstrap", "1.6.0"))
+    implementation(npm("chessboardjs", "0.0.1"))
+    implementation(npm("chess.js", "0.11.0"))
 }
 
 kotlin {

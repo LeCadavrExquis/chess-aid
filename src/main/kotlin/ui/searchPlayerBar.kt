@@ -1,6 +1,5 @@
 package ui
 
-import EventsHandler
 import kotlinx.html.InputType
 import kotlinx.html.RP
 import kotlinx.html.js.onChangeFunction
@@ -13,7 +12,7 @@ import react.dom.div
 import react.dom.input
 
 external interface SearchPlayerBarProps : RProps {
-    var eh: EventsHandler
+    var searchPlayer: (String) -> Unit
 }
 
 external interface SearchPlayerBarState : RState {
@@ -41,7 +40,7 @@ class SearchPlayerBar : RComponent<SearchPlayerBarProps, SearchPlayerBarState>()
             button {
                 +"Search"
                 attrs.onClickFunction = {
-                    props.eh.getGames(state.username)
+                    props.searchPlayer(state.username)
                 }
             }
         }
