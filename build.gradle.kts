@@ -21,6 +21,7 @@ dependencies {
     implementation(npm("jquery", "3.6.0"))
     implementation(npm("react-bootstrap", "1.6.0"))
     implementation(npm("chessboardjs", "0.0.1"))
+    implementation(npm("chess.js", "0.11.0"))
 }
 
 kotlin {

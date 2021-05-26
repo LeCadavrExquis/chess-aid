@@ -1,42 +1,65 @@
 package ui
 
-import EventsHandler
+import declarations.ChessGame
 import declarations.Chessboard
 import kotlinx.css.px
 import kotlinx.css.width
 import kotlinx.html.id
+import kotlinx.html.js.onClickFunction
 import react.*
-import react.dom.img
+import react.dom.button
+import react.dom.div
 import styled.styledDiv
 import kotlin.js.json
 
 external interface ChessBoardProps : RProps {
-    var currentPosition: String
-    var eh: EventsHandler
+    var moves: List<String>
+    var eh: ChessboardEventHandler
 }
 
 external interface ChessBoardState : RState {
     var board: Chessboard
-//    var divLoaded: Boolean
 }
 
 
 class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
+    companion object {
+        val game = ChessGame()
+    }
     override fun RBuilder.render() {
-        styledDiv {
-            attrs.id = "chessBoard"
-            css.width = 400.px
+        div {
+            styledDiv {
+                attrs.id = "chessBoard"
+                css.width = 500.px
+            }
+            button {
+                +"Restart"
+                attrs.onClickFunction = {
+                    state.board.start()
+                    props.eh.restartPosition()
+                }
+            }
         }
-//        if (!state.divLoaded) img { attrs.src = "chess.png" }
     }
 
     override fun componentDidMount() {
         state.board = Chessboard("chessBoard", json(
             "draggable" to true,
-            "position" to "start"
+            "position" to "start",
+            "onDrop" to { source: String, target: String, piece: String,
+                             newPos: dynamic, oldPos: dynamic, orientation: String->
+                //TODO: send move with piece info PNG alike
+                console.log("changed")
+                console.log(Chessboard.objToFen(newPos))
+                props.eh.movePlayed(target)
+            }
         ))
-//        state.divLoaded = true
     }
+}
+
+interface ChessboardEventHandler {
+    fun movePlayed(move: String)
+    fun restartPosition()
 }
 
 fun RBuilder.chessBoard(handler: ChessBoardProps.() -> Unit) : ReactElement {
