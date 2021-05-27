@@ -20,8 +20,8 @@ external interface SearchPlayerBarState : RState {
 }
 
 class SearchPlayerBar : RComponent<SearchPlayerBarProps, SearchPlayerBarState>() {
-    init {
-        state.username = "type username"
+    override fun SearchPlayerBarState.init() {
+        username = "type username"
     }
     override fun RBuilder.render() {
         div{
