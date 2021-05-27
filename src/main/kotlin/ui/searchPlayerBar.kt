@@ -39,6 +39,7 @@ class SearchPlayerBar : RComponent<SearchPlayerBarProps, SearchPlayerBarState>()
             }
             button {
                 //TODO: react-bootsrap loading button
+                //NTH: click on press ENTER while input is active
                 +"Search"
                 attrs.onClickFunction = {
                     props.searchPlayer(state.username)
