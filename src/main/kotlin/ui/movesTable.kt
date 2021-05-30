@@ -5,7 +5,6 @@ import model.GameModel
 import react.*
 import react.dom.*
 
-
 external interface MovesTableProps : RProps {
     var currentPosition: List<String>
     var games: List<GameModel>
