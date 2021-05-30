@@ -5,6 +5,7 @@ import react.RProps
 
 @JsModule("react-bootstrap/Button")
 @JsNonModule
+//TODO: proper declaration
 external val ButtonImport: dynamic
 
 external interface ButtonProps: RProps {
