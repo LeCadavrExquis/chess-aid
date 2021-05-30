@@ -1,5 +1,6 @@
 package ui
 
+import declarations.Button
 import declarations.ChessGame
 import declarations.Chessboard
 import kotlinx.css.px
@@ -32,12 +33,18 @@ class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
                 attrs.id = "chessBoard"
                 css.width = 500.px
             }
-            button {
+            Button {
                 +"Restart"
-                attrs.onClickFunction = {
-                    state.board.start()
+                attrs.variant = "dark"
+                attrs.onClick = {
                     props.eh.restartPosition()
+                    state.board.start()
                 }
+            }
+            Button {
+                +"Undo [todo]"
+                attrs.variant = "warning"
+                //TODO: implement undo button
             }
         }
     }

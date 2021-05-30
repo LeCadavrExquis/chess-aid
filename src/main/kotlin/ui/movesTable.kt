@@ -5,7 +5,6 @@ import model.GameModel
 import react.*
 import react.dom.*
 
-
 external interface MovesTableProps : RProps {
     var currentPosition: List<String>
     var games: List<GameModel>
@@ -16,7 +15,11 @@ class MovesTable : RComponent<MovesTableProps, RState>() {
         div {
             p { +"Current position :${props.currentPosition}"}
             Table {
-                attrs.args = "striped bordered hover"
+                attrs {
+                    striped = true
+                    bordered = true
+                    hover = true
+                }
 
                 thead {
                     tr {
