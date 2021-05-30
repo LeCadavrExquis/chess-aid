@@ -1,5 +1,6 @@
 package ui
 
+import declarations.Button
 import kotlinx.html.InputType
 import kotlinx.html.RP
 import kotlinx.html.js.onChangeFunction
@@ -37,11 +38,12 @@ class SearchPlayerBar : RComponent<SearchPlayerBarProps, SearchPlayerBarState>()
                     }
                 }
             }
-            button {
-                //TODO: react-bootsrap loading button
+            Button {
+                //TODO: loading button
                 //NTH: click on press ENTER while input is active
                 +"Search"
-                attrs.onClickFunction = {
+                attrs.variant = "primary"
+                attrs.onClick = {
                     props.searchPlayer(state.username)
                 }
             }
