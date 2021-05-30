@@ -10,5 +10,10 @@ external val TableImport: dynamic
 val Table: RClass<TableProps> = TableImport.default
 
 external interface TableProps : RProps {
-    var args: String? get() = definedExternally; set(value) = definedExternally
+    var bordered: Boolean
+    var borderless: Boolean
+    var hover: Boolean
+    var size: String
+    var striped: Boolean
+    var variant: String
 }

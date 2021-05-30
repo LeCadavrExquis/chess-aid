@@ -16,7 +16,11 @@ class MovesTable : RComponent<MovesTableProps, RState>() {
         div {
             p { +"Current position :${props.currentPosition}"}
             Table {
-                attrs.args = "striped bordered hover"
+                attrs {
+                    striped = true
+                    bordered = true
+                    hover = true
+                }
 
                 thead {
                     tr {
