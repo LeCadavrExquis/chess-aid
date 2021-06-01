@@ -6,6 +6,7 @@ import kotlin.js.json
 @JsModule("chessboardjs")
 @JsNonModule
 @JsName("Chessboard")
+//TODO: change declaration for consistency
 external class Chessboard(divID: String, config: Json) {
     companion object {
         fun objToFen(obj: dynamic): String = definedExternally
