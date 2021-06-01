@@ -1,39 +1,71 @@
 package ui
 
 import declarations.Button
-import declarations.buttonToolbar
+import declarations.toggleButton
+import declarations.toggleButtonGroup
 import kotlinx.css.margin
 import kotlinx.css.padding
 import react.RBuilder
 import react.ReactElement
-import react.dom.div
-import react.dom.h3
-import react.dom.h4
-import react.dom.render
+import react.dom.*
 import styled.styledDiv
 
 fun RBuilder.filterPanel() {
     styledDiv {
         css.margin = "20px"
         h4 {+"Filter:"}
-        buttonToolbar{
-            attrs.className = "elko"
-            Button {
-                attrs.variant = "primary"
-                +"butt 1"
+        toggleButtonGroup {
+            attrs {
+                type = "checkbox"
+                className = "filterBW"
             }
-            Button {
-                attrs.variant = "secondary"
-                +"butt 2"
+            toggleButton {
+                attrs.value = 1
+                +"white"
+            }
+            toggleButton {
+                attrs.value = 2
+                +"black"
             }
         }
-        Button {
-            attrs.variant = "success"
-            +"butt 3"
+        br {  }
+        toggleButtonGroup {
+            attrs {
+                type = "checkbox"
+                className = "ifWin"
+            }
+            toggleButton {
+                attrs.value = 1
+                +"win"
+            }
+            toggleButton {
+                attrs.value = 2
+                +"lose"
+            }
+            toggleButton {
+                attrs.value = 3
+                +"draw"
+            }
         }
-        Button {
-            attrs.variant = "danger"
-            +"butt 4"
+        br {  }
+        toggleButtonGroup {
+            attrs {
+                type = "checkbox"
+                defaultValue = arrayOf(1,2,3)
+                className = "gameType"
+            }
+            toggleButton {
+                attrs.value = 1
+                +"rapid"
+            }
+            toggleButton {
+                attrs.value = 2
+                +"blitz"
+            }
+            toggleButton {
+                attrs.value = 3
+                +"bullet"
+            }
         }
     }
 }
