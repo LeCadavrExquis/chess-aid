@@ -7,14 +7,12 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.await
 import kotlinx.coroutines.launch
 import kotlinx.css.*
+import model.FilterSettings
 import model.GameModel
 import org.w3c.fetch.*
 import react.*
 import react.dom.*
-import styled.css
-import styled.styledBody
 import styled.styledDiv
-import styled.styledH1
 import ui.*
 import kotlin.js.Json
 import kotlin.js.json
@@ -22,37 +20,30 @@ import kotlin.js.json
 external interface AppState : RState {
     var games: List<GameModel>
     var moves: List<String>
+    var filter: FilterSettings
 }
 
 class App : RComponent<RProps, AppState>() {
     override fun AppState.init() {
         games = emptyList()
         moves = emptyList()
+        filter = FilterSettings(emptyList(), emptyList(), emptyList())
     }
     override fun RBuilder.render() {
-        //TODO: manage proper display
         styledDiv {
             css.margin = "50px"
             Container {
-//            css {
-//                display = Display.flex
-//                flexDirection = FlexDirection.row
-
-//            }
                 Row {
                     Col {
-                        h1 {
-
-                            +"Chess Aid"
-                        }
+                        h1 { +"Chess Aid" }
                     }
                     Col {}
                     Col {
                         searchPlayerBar {
                             searchPlayer = { username ->
+                                //TODO: rewrite as a method
                                 MainScope().launch {
                                     val fetchedGames = fetchGames(username)
-                                    println("fetched!")
                                     setState {
                                         games = fetchedGames
                                     }
@@ -90,14 +81,18 @@ class App : RComponent<RProps, AppState>() {
                         Container{
                             Row{
                                 Col{
-                                    filterPanel()
+                                    filterPanel {
+                                        attrs {
+                                            updateFilter = this@App::updateFilter
+                                        }
+                                    }
                                 }
                             }
                             Row {
                                 Col {
                                     movesTable {
                                         currentPosition = state.moves
-                                        games = state.games
+                                        games = filterGames()
                                     }
                                 }
                             }
@@ -105,6 +100,30 @@ class App : RComponent<RProps, AppState>() {
                     }
                 }
             }
+        }
+    }
+
+    private fun updateFilter(category: String, values: List<String>) {
+        val filterSettings = when(category) {
+            "type" -> FilterSettings(state.filter.color, values, state.filter.winner)
+            "color" -> FilterSettings(values, state.filter.type, state.filter.winner)
+            "winner" -> FilterSettings(state.filter.color, state.filter.type, values)
+            else -> null
+        }
+        setState {
+            if (filterSettings != null) {
+                filter = filterSettings
+            }
+        }
+    }
+    private fun filterGames(): List<GameModel> {
+        //TODO: implement move filtering
+        return state.games.filter {
+            if(state.filter.type.isNotEmpty()) state.filter.type.contains(it.type) else true
+        }.filter {
+            if(state.filter.color.isNotEmpty()) state.filter.color.contains(it.color) else true
+        }.filter {
+            if(state.filter.winner.isNotEmpty()) state.filter.winner.contains(it.winner) else true
         }
     }
 }
