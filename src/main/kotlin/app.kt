@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 import kotlinx.css.*
 import model.FilterSettings
 import model.Game
-import model.PGN
 import org.w3c.fetch.*
 import react.*
 import react.dom.*
@@ -15,7 +14,6 @@ import styled.styledDiv
 import ui.*
 import kotlin.js.Json
 import kotlin.js.json
-import model.Position
 
 external interface AppState : RState {
     var userGames: List<Game>
@@ -23,7 +21,7 @@ external interface AppState : RState {
     var filter: FilterSettings
 }
 
-class App : RComponent<RProps, AppState>() {
+class App : RComponent<RProps, AppState>(), ChessboardEventHandler {
     val game = ChessGame()
     override fun AppState.init() {
         userGames = emptyList()
@@ -42,7 +40,6 @@ class App : RComponent<RProps, AppState>() {
                     Col {
                         searchPlayerBar {
                             searchPlayer = { username ->
-                                //TODO: rewrite as a method
                                 MainScope().launch {
                                     val fetchedGames = fetchGames(username)
                                     setState {
@@ -62,22 +59,7 @@ class App : RComponent<RProps, AppState>() {
                 Row{
                     Col{
                         chessBoard {
-                            eh = object: ChessboardEventHandler {
-                                override fun onPieceDrop(source: String, target: String): String {
-                                    val move = game.move(json("from" to source, "to" to target, "promotion" to "q"))
-                                    return if(move != null) {
-                                        setState {
-                                            position = game.pgn(js("{}"))
-                                        }
-                                        "ok"
-                                    } else {
-                                        "snapback"
-                                    }
-                                }
-                                override fun restartPosition() {
-                                    game.reset()
-                                }
-                            }
+                            eh = this@App
                         }
                     }
                     Col{
@@ -127,7 +109,28 @@ class App : RComponent<RProps, AppState>() {
             if(state.filter.color.isNotEmpty()) state.filter.color.contains(it.color) else true
         }.filter {
             if(state.filter.winner.isNotEmpty()) state.filter.winner.contains(it.winner) else true
+        }.filter { game ->
+            if(state.position.isNotBlank()) game.moves.filter { it == ' ' }.contains(state.position.toMoveList().toString()) else true
         }
+    }
+
+    override fun onPieceDrop(source: String, target: String): String {
+        val move = game.move(json("from" to source, "to" to target, "promotion" to "q"))
+        return if(move != null) {
+            setState {
+                position = game.pgn(js("{}"))
+            }
+            "ok"
+        } else {
+            "snapback"
+        }
+    }
+
+    override fun restartPosition() {
+        setState {
+            position = ""
+        }
+        game.reset()
     }
 }
 suspend fun fetchGames(username: String) : List<Game> {

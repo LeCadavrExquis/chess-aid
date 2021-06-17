@@ -2,7 +2,6 @@ package ui
 
 import declarations.Table
 import model.Game
-import model.PGN
 import react.*
 import react.dom.*
 
@@ -15,6 +14,9 @@ class MovesTable : RComponent<MovesTableProps, RState>() {
     override fun RBuilder.render() {
         div {
             p { +"Current position :${props.currentPosition}"}
+            p {
+                + if (!props.currentPosition.isNullOrEmpty()) props.currentPosition.toMoveList().reduce { acc, s -> "$acc $s" } else " empty array"
+            }
             Table {
                 attrs {
                     striped = true
@@ -31,8 +33,7 @@ class MovesTable : RComponent<MovesTableProps, RState>() {
                 }
                 tbody {
                     //TODO : implement table body
-                    props.games.take(5)
-                        .forEach {
+                    props.games.take(5).forEach {
                             tr {
                                 td { +it.moves.slice(0..2) }
                                 td { +it.color }
@@ -49,4 +50,10 @@ fun RBuilder.movesTable(handler: MovesTableProps.() -> Unit) : ReactElement {
     return child(MovesTable::class){
         this.attrs(handler)
     }
+}
+
+typealias PGN = String
+
+fun PGN.toMoveList() : List<String> {
+    return this.split(" ").filterIndexed { idx, _ -> idx.rem(3) != 0}
 }

@@ -29,9 +29,9 @@ class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
             Button {
                 +"Restart"
                 attrs.variant = "dark"
-                attrs.onClick = {
-                    state.board.start()
+                attrs.onClick =  {
                     props.eh.restartPosition()
+                    state.board.start()
                 }
             }
             Button {

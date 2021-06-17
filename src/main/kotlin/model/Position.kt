@@ -7,4 +7,3 @@ data class Position(val fen: FEN, val movesList: List<String>) {
 }
 
 typealias FEN = String
-typealias PGN = String
