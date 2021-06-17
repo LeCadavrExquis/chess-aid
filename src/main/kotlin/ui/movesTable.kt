@@ -1,13 +1,14 @@
 package ui
 
 import declarations.Table
-import model.GameModel
+import model.Game
+import model.PGN
 import react.*
 import react.dom.*
 
 external interface MovesTableProps : RProps {
-    var currentPosition: List<String>
-    var games: List<GameModel>
+    var currentPosition: PGN
+    var games: List<Game>
 }
 
 class MovesTable : RComponent<MovesTableProps, RState>() {

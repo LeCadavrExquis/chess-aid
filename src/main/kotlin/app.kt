@@ -1,14 +1,13 @@
 
-import declarations.Col
-import declarations.Container
-import declarations.Row
+import declarations.*
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.await
 import kotlinx.coroutines.launch
 import kotlinx.css.*
 import model.FilterSettings
-import model.GameModel
+import model.Game
+import model.PGN
 import org.w3c.fetch.*
 import react.*
 import react.dom.*
@@ -16,17 +15,19 @@ import styled.styledDiv
 import ui.*
 import kotlin.js.Json
 import kotlin.js.json
+import model.Position
 
 external interface AppState : RState {
-    var games: List<GameModel>
-    var moves: List<String>
+    var userGames: List<Game>
+    var position: PGN
     var filter: FilterSettings
 }
 
 class App : RComponent<RProps, AppState>() {
+    val game = ChessGame()
     override fun AppState.init() {
-        games = emptyList()
-        moves = emptyList()
+        userGames = emptyList()
+        position = ""
         filter = FilterSettings(emptyList(), emptyList(), emptyList())
     }
     override fun RBuilder.render() {
@@ -45,7 +46,7 @@ class App : RComponent<RProps, AppState>() {
                                 MainScope().launch {
                                     val fetchedGames = fetchGames(username)
                                     setState {
-                                        games = fetchedGames
+                                        userGames = fetchedGames
                                     }
                                 }
                             }
@@ -61,18 +62,20 @@ class App : RComponent<RProps, AppState>() {
                 Row{
                     Col{
                         chessBoard {
-                            moves = state.moves
                             eh = object: ChessboardEventHandler {
-                                override fun movePlayed(move: String) {
-                                    setState {
-                                        moves = moves + move
+                                override fun onPieceDrop(source: String, target: String): String {
+                                    val move = game.move(json("from" to source, "to" to target, "promotion" to "q"))
+                                    return if(move != null) {
+                                        setState {
+                                            position = game.pgn(js("{}"))
+                                        }
+                                        "ok"
+                                    } else {
+                                        "snapback"
                                     }
                                 }
-
                                 override fun restartPosition() {
-                                    setState {
-                                        moves = emptyList()
-                                    }
+                                    game.reset()
                                 }
                             }
                         }
@@ -91,7 +94,7 @@ class App : RComponent<RProps, AppState>() {
                             Row {
                                 Col {
                                     movesTable {
-                                        currentPosition = state.moves
+                                        currentPosition = state.position
                                         games = filterGames()
                                     }
                                 }
@@ -116,9 +119,9 @@ class App : RComponent<RProps, AppState>() {
             }
         }
     }
-    private fun filterGames(): List<GameModel> {
+    private fun filterGames(): List<Game> {
         //TODO: implement move filtering
-        return state.games.filter {
+        return state.userGames.filter {
             if(state.filter.type.isNotEmpty()) state.filter.type.contains(it.type) else true
         }.filter {
             if(state.filter.color.isNotEmpty()) state.filter.color.contains(it.color) else true
@@ -127,7 +130,7 @@ class App : RComponent<RProps, AppState>() {
         }
     }
 }
-suspend fun fetchGames(username: String) : List<GameModel> {
+suspend fun fetchGames(username: String) : List<Game> {
     val request = object : RequestInit {
         override var method: String? = "GET"
         override var headers = json("Accept" to "application/x-ndjson")
@@ -144,7 +147,7 @@ suspend fun fetchGames(username: String) : List<GameModel> {
         .dropLast(1)
         .map { JSON.parse<Json>(it) }
         .map {
-            GameModel(
+            Game(
                 id = it["id"] as String,
                 type = it["speed"] as String,
                 moves = it["moves"] as String,
@@ -152,4 +155,5 @@ suspend fun fetchGames(username: String) : List<GameModel> {
                 color = if ((((it["players"] as Json)["white"] as Json)["user"] as Json)["name"] == username) "white" else "black"
             )}
 }
+
 fun RBuilder.app() =  child(App::class) { }

@@ -1,20 +1,16 @@
 package ui
 
 import declarations.Button
-import declarations.ChessGame
 import declarations.Chessboard
 import kotlinx.css.px
 import kotlinx.css.width
 import kotlinx.html.id
-import kotlinx.html.js.onClickFunction
 import react.*
-import react.dom.button
 import react.dom.div
 import styled.styledDiv
 import kotlin.js.json
 
 external interface ChessBoardProps : RProps {
-    var moves: List<String>
     var eh: ChessboardEventHandler
 }
 
@@ -24,21 +20,18 @@ external interface ChessBoardState : RState {
 
 
 class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
-    companion object {
-        val game = ChessGame()
-    }
     override fun RBuilder.render() {
         div {
             styledDiv {
                 attrs.id = "chessBoard"
-                css.width = 500.px
+                css.width = 450.px
             }
             Button {
                 +"Restart"
                 attrs.variant = "dark"
                 attrs.onClick = {
-                    props.eh.restartPosition()
                     state.board.start()
+                    props.eh.restartPosition()
                 }
             }
             Button {
@@ -54,18 +47,14 @@ class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
             "draggable" to true,
             "position" to "start",
             "onDrop" to { source: String, target: String, piece: String,
-                             newPos: dynamic, oldPos: dynamic, orientation: String->
-                //TODO: send move with piece info PNG alike
-                console.log("changed")
-                console.log(Chessboard.objToFen(newPos))
-                props.eh.movePlayed(target)
-            }
-        ))
+                newPos: dynamic, oldPos: dynamic, orientation: String ->
+                props.eh.onPieceDrop(source, target)
+            }))
     }
 }
 
 interface ChessboardEventHandler {
-    fun movePlayed(move: String)
+    fun onPieceDrop(source: String, target: String): String
     fun restartPosition()
 }
 

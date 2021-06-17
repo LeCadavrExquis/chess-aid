@@ -9,10 +9,11 @@ import kotlin.js.json
 //TODO: change declaration for consistency
 external class Chessboard(divID: String, config: Json) {
     companion object {
-        fun objToFen(obj: dynamic): String = definedExternally
+        fun objToFen(obj: dynamic): String
     }
-    fun start(): Nothing = definedExternally
-    fun position(): Json = definedExternally
-    fun position(fen: String): Nothing = definedExternally
-    fun fen(): String = definedExternally
+    fun start(): Nothing
+    fun position(): Json
+    fun position(fen: String): Nothing
+    fun fen(): String
+    fun resize()
 }
