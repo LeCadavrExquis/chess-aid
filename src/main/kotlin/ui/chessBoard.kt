@@ -35,7 +35,7 @@ class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
                 }
             }
             Button {
-                +"Undo [todo]"
+                +"Undo"
                 attrs.variant = "dark"
                 attrs.onClick = {
                     state.board.position(props.eh.undo())

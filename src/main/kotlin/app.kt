@@ -102,7 +102,6 @@ class App : RComponent<RProps, AppState>(), ChessboardEventHandler {
         }
     }
     private fun filterGames(): List<Game> {
-        //TODO: implement move filtering
         return state.userGames.filter {
             if(state.filter.type.isNotEmpty()) state.filter.type.contains(it.type) else true
         }.filter {
@@ -110,7 +109,8 @@ class App : RComponent<RProps, AppState>(), ChessboardEventHandler {
         }.filter {
             if(state.filter.winner.isNotEmpty()) state.filter.winner.contains(it.winner) else true
         }.filter { game ->
-            if(state.position.isNotBlank()) game.moves.filter { it == ' ' }.contains(state.position.toMoveList().toString()) else true
+            println(state.position.toMoveList().toString())
+            if(state.position.isNotBlank()) game.moves.split(" ").reduce {acc, s -> "$acc$s" }.startsWith(state.position.toMoveList().reduce { acc, s -> "$acc$s" }) else true
         }
     }
 
