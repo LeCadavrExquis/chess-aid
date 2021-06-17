@@ -36,8 +36,10 @@ class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
             }
             Button {
                 +"Undo [todo]"
-                attrs.variant = "warning"
-                //TODO: implement undo button
+                attrs.variant = "dark"
+                attrs.onClick = {
+                    state.board.position(props.eh.undo())
+                }
             }
         }
     }
@@ -46,8 +48,7 @@ class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
         state.board = Chessboard("chessBoard", json(
             "draggable" to true,
             "position" to "start",
-            "onDrop" to { source: String, target: String, piece: String,
-                newPos: dynamic, oldPos: dynamic, orientation: String ->
+            "onDrop" to { source: String, target: String, _: String, _: dynamic, _: dynamic, _: String ->
                 props.eh.onPieceDrop(source, target)
             }))
     }
@@ -56,6 +57,7 @@ class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
 interface ChessboardEventHandler {
     fun onPieceDrop(source: String, target: String): String
     fun restartPosition()
+    fun undo() : FEN
 }
 
 fun RBuilder.chessBoard(handler: ChessBoardProps.() -> Unit) : ReactElement {
@@ -63,3 +65,4 @@ fun RBuilder.chessBoard(handler: ChessBoardProps.() -> Unit) : ReactElement {
         this.attrs(handler)
     }
 }
+typealias FEN = String

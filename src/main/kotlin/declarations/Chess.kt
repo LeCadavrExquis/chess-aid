@@ -10,6 +10,7 @@ external class ChessGame {
     fun move(move: Json): JSON?
     fun moves(): List<String>?
     fun load(fen: String): Nothing
-    fun reset(): Nothing
+    fun reset(): Unit
     fun pgn(options: JSON): String
+    fun undo(): Unit
 }

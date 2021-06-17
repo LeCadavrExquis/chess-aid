@@ -132,6 +132,14 @@ class App : RComponent<RProps, AppState>(), ChessboardEventHandler {
         }
         game.reset()
     }
+    override fun undo(): FEN{
+        game.undo()
+        setState {
+            position = game.pgn(js("{}"))
+        }
+        return game.fen()
+    }
+
 }
 suspend fun fetchGames(username: String) : List<Game> {
     val request = object : RequestInit {
