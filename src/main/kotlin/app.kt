@@ -1,4 +1,3 @@
-
 import declarations.*
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
@@ -62,15 +61,26 @@ class App : RComponent<RProps, AppState>(), ChessboardEventHandler {
                             eh = this@App
                         }
                     }
-                    Col{
-                        Container{
-                            Row{
-                                Col{
+                    Col {
+                        Container {
+                            Row {
+                                Col {
+                                    h4 { +"Filter:" }
+                                }
+                                Col {
+                                    h4 { +"Current position: "}
+                                }
+                            }
+                            Row {
+                                Col {
                                     filterPanel {
                                         attrs {
                                             updateFilter = this@App::updateFilter
                                         }
                                     }
+                                }
+                                Col {
+                                    p { +state.position }
                                 }
                             }
                             Row {

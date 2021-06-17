@@ -1,9 +1,13 @@
 package ui
 
+import declarations.Container
 import declarations.Table
+import kotlinx.css.*
 import model.Game
 import react.*
 import react.dom.*
+import styled.styledDiv
+import kotlin.math.roundToInt
 
 external interface MovesTableProps : RProps {
     var currentPosition: PGN
@@ -13,10 +17,6 @@ external interface MovesTableProps : RProps {
 class MovesTable : RComponent<MovesTableProps, RState>() {
     override fun RBuilder.render() {
         div {
-            p { +"Current position :${props.currentPosition}"}
-            p {
-                + if (!props.currentPosition.isNullOrEmpty()) props.currentPosition.toMoveList().reduce { acc, s -> "$acc $s" } else " empty array"
-            }
             Table {
                 attrs {
                     striped = true
@@ -39,7 +39,6 @@ class MovesTable : RComponent<MovesTableProps, RState>() {
                     }.filter {
                         !it.key.isNullOrEmpty()
                     }.map { map ->
-                        println("object mp")
                         object {
                             val move = map.key
                             val count = map.value.count()
@@ -54,13 +53,34 @@ class MovesTable : RComponent<MovesTableProps, RState>() {
                                 td { +it.move!! }
                                 td { +it.count.toString() }
                                 td {
-                                    +it.percentage.map { "${it.first} - ${it.second}" }
-                                        .reduce { acc, s -> "$acc : $s" }
+                                    barKDA(it.percentage)
                                 }
                             }
                     }
                 }
             }
+        }
+    }
+    private fun RBuilder.barKDA(stats: List<Pair<String, Int>>) {
+        val sum = stats.sumOf { it.second }
+        styledDiv {
+            css.display = Display.flex
+            stats.sortedByDescending { it.first }
+                .map {
+                    it.first to (it.second.toDouble() / sum * 100).roundToInt()
+                }.forEach {
+                    println("${it.first} -> ${it.second}")
+                    styledDiv {
+                        css.background = when(it.first) {
+                            "white" -> "white"
+                            "black" -> "black"
+                            else -> "gray"
+                        }
+                        css.borderStyle = BorderStyle.solid
+                        css.width = LinearDimension("${it.second}%")
+                        +"${it.second}%"
+                    }
+                }
         }
     }
 }
