@@ -32,14 +32,33 @@ class MovesTable : RComponent<MovesTableProps, RState>() {
                     }
                 }
                 tbody {
-                    //TODO : implement table body
-                    props.games.take(5).forEach {
-                            tr {
-                                td { +it.moves.slice(0..2) }
-                                td { +it.color }
-                                td { +it.type }
+                    props.games.map {
+                        it to it.moves.split(" ").elementAt(props.currentPosition.toMoveList().size)
+                    }.groupBy { (game, lastMove) ->
+                        lastMove
+                    }.filter {
+                        !it.key.isNullOrEmpty()
+                    }.map { map ->
+                        println("object mp")
+                        object {
+                            val move = map.key
+                            val count = map.value.count()
+                            val percentage = map.value.groupBy {
+                                it.first.winner
+                            }.map {
+                                it.key to it.value.count()
                             }
                         }
+                    }.take(5).forEach {
+                            tr {
+                                td { +it.move!! }
+                                td { +it.count.toString() }
+                                td {
+                                    +it.percentage.map { "${it.first} - ${it.second}" }
+                                        .reduce { acc, s -> "$acc : $s" }
+                                }
+                            }
+                    }
                 }
             }
         }
