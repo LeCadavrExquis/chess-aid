@@ -1,20 +1,16 @@
 package ui
 
 import declarations.Button
-import declarations.ChessGame
 import declarations.Chessboard
 import kotlinx.css.px
 import kotlinx.css.width
 import kotlinx.html.id
-import kotlinx.html.js.onClickFunction
 import react.*
-import react.dom.button
 import react.dom.div
 import styled.styledDiv
 import kotlin.js.json
 
 external interface ChessBoardProps : RProps {
-    var moves: List<String>
     var eh: ChessboardEventHandler
 }
 
@@ -24,27 +20,26 @@ external interface ChessBoardState : RState {
 
 
 class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
-    companion object {
-        val game = ChessGame()
-    }
     override fun RBuilder.render() {
         div {
             styledDiv {
                 attrs.id = "chessBoard"
-                css.width = 500.px
+                css.width = 450.px
             }
             Button {
                 +"Restart"
                 attrs.variant = "dark"
-                attrs.onClick = {
+                attrs.onClick =  {
                     props.eh.restartPosition()
                     state.board.start()
                 }
             }
             Button {
-                +"Undo [todo]"
-                attrs.variant = "warning"
-                //TODO: implement undo button
+                +"Undo"
+                attrs.variant = "dark"
+                attrs.onClick = {
+                    state.board.position(props.eh.undo())
+                }
             }
         }
     }
@@ -53,20 +48,16 @@ class ChessBoard : RComponent<ChessBoardProps, ChessBoardState>() {
         state.board = Chessboard("chessBoard", json(
             "draggable" to true,
             "position" to "start",
-            "onDrop" to { source: String, target: String, piece: String,
-                             newPos: dynamic, oldPos: dynamic, orientation: String->
-                //TODO: send move with piece info PNG alike
-                console.log("changed")
-                console.log(Chessboard.objToFen(newPos))
-                props.eh.movePlayed(target)
-            }
-        ))
+            "onDrop" to { source: String, target: String, _: String, _: dynamic, _: dynamic, _: String ->
+                props.eh.onPieceDrop(source, target)
+            }))
     }
 }
 
 interface ChessboardEventHandler {
-    fun movePlayed(move: String)
+    fun onPieceDrop(source: String, target: String): String
     fun restartPosition()
+    fun undo() : FEN
 }
 
 fun RBuilder.chessBoard(handler: ChessBoardProps.() -> Unit) : ReactElement {
@@ -74,3 +65,4 @@ fun RBuilder.chessBoard(handler: ChessBoardProps.() -> Unit) : ReactElement {
         this.attrs(handler)
     }
 }
+typealias FEN = String

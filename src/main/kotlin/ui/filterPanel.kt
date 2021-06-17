@@ -28,7 +28,6 @@ class FilterPanel : RComponent<FilterPanelProps, FilterPanelState>() {
     override fun RBuilder.render() {
         styledDiv {
             css.margin = "20px"
-            h4 { +"Filter:" }
             Container {
                 Row {
                     toggleButtonGroup {
