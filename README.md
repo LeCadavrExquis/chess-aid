@@ -6,8 +6,8 @@ Web App fetching user chess games from lichess API [PAINT PW]
 - Bootstrap
 ## preview
 ![Alt text](src/main/resources/chess-view.png?raw=true "Title")
-## build and run
-
+## run project
+all built files in 'out' directory
 ## test
 lichess accounts to test:
 + Kwarcioch
