@@ -2,3 +2,4 @@
 /.gradle/
 /build/
 /build/js/packages/chess-aid/kotlin/
+!/build/distributions/*
